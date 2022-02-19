@@ -8,6 +8,40 @@ import Edit from "./pages/Edit.js";
 
 export const DiaryStateContext = React.createContext();
 export const DiaryDispatchContext = React.createContext();
+
+const dummyData = [
+  {
+    id: 1,
+    emotion: 1,
+    content: "오늘의 일기1",
+    date: 1643641200001,
+  },
+  {
+    id: 2,
+    emotion: 3,
+    content: "오늘의 일기2",
+    date: 1643641200002,
+  },
+  {
+    id: 3,
+    emotion: 5,
+    content: "오늘의 일기3",
+    date: 1643641200003,
+  },
+  {
+    id: 4,
+    emotion: 2,
+    content: "오늘의 일기4",
+    date: 1643641200004,
+  },
+  {
+    id: 5,
+    emotion: 4,
+    content: "오늘의 일기5",
+    date: 1643641200005,
+  },
+];
+
 const reducer = (state, action) => {
   let newState = [];
   switch (action.type) {
@@ -39,7 +73,7 @@ const App = () => {
   const env = process.env;
   env.PUBLIC_URL = env.PUBLIC_URL || "";
 
-  const [data, dispatch] = useReducer(reducer, []);
+  const [data, dispatch] = useReducer(reducer, dummyData);
   const dataId = useRef(0);
 
   // CREATE
