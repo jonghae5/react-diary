@@ -1,44 +1,13 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 import MyHeader from "./../components/MyHeader";
 import MyButton from "./../components/MyButton";
 import { useNavigate } from "react-router-dom";
 import EmotionItem from "./EmotionItem";
 import { DiaryDispatchContext } from "../App";
+import { getStringDate } from "../util/date";
+import { emotionList } from "../util/emotion";
 
-const env = process.env;
-env.PUBLIC_URL = env.PUBLIC_URL || "";
-const emotionList = [
-  {
-    emotion_id: 1,
-    emotion_img: process.env.PUBLIC_URL + `/assets/emotion1.png`,
-    emotion_descript: `완전 좋음`,
-  },
-  {
-    emotion_id: 2,
-    emotion_img: process.env.PUBLIC_URL + `/assets/emotion2.png`,
-    emotion_descript: `좋음`,
-  },
-  {
-    emotion_id: 3,
-    emotion_img: process.env.PUBLIC_URL + `/assets/emotion3.png`,
-    emotion_descript: `그럭저럭`,
-  },
-  {
-    emotion_id: 4,
-    emotion_img: process.env.PUBLIC_URL + `/assets/emotion4.png`,
-    emotion_descript: `나쁨`,
-  },
-  {
-    emotion_id: 5,
-    emotion_img: process.env.PUBLIC_URL + `/assets/emotion5.png`,
-    emotion_descript: `끔찍함`,
-  },
-];
-const getStringDate = (date) => {
-  return date.toISOString().slice(0, 10);
-};
-
-const DiaryEditor = () => {
+const DiaryEditor = ({ isEdit, originData }) => {
   const navigate = useNavigate();
 
   const contentRef = useRef();
@@ -50,22 +19,42 @@ const DiaryEditor = () => {
     setEmotion(emotion);
   };
 
-  const { onCreate } = useContext(DiaryDispatchContext);
-  const handleSubmit = () => {
+  const { onCreate, onEdit } = useContext(DiaryDispatchContext);
+
+  const handleCreateSubmit = () => {
     if (content.length < 1) {
       contentRef.current.focus();
-      console.log("hello");
       return;
     }
-
-    onCreate(date, content, emotion);
-    navigate("/", { replace: true });
+    if (window.confirm("새로운 일기를 작성하시겠습니까?")) {
+      onCreate(date, content, emotion);
+      navigate("/", { replace: true });
+    }
   };
+
+  const handleEditSubmit = () => {
+    if (content.length < 1) {
+      contentRef.current.focus();
+      return;
+    }
+    if (window.confirm("일기를 수정하시겠습니까?")) {
+      onEdit(originData.id, date, content, emotion);
+      navigate("/", { replace: true });
+    }
+  };
+
+  useEffect(() => {
+    if (isEdit) {
+      setDate(getStringDate(new Date(parseInt(originData.date, 10))));
+      setEmotion(originData.emotion);
+      setContent(originData.content);
+    }
+  }, [isEdit, originData]);
   return (
     <div className='DiaryEditor'>
       <div>
         <MyHeader
-          headText={"새 일기쓰기"}
+          headText={isEdit ? "일기 수정하기" : "새 일기쓰기"}
           leftChild={
             <MyButton
               text={"< 뒤로가기"}
@@ -127,7 +116,7 @@ const DiaryEditor = () => {
             <MyButton
               text={"작성완료"}
               type={"positive"}
-              onClick={handleSubmit}
+              onClick={isEdit ? handleEditSubmit : handleCreateSubmit}
             />
           </div>
         </section>

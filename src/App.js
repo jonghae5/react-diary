@@ -14,31 +14,31 @@ const dummyData = [
     id: 1,
     emotion: 1,
     content: "오늘의 일기1",
-    date: 1643641200001,
+    date: 1643641210001,
   },
   {
     id: 2,
     emotion: 3,
     content: "오늘의 일기2",
-    date: 1643641200002,
+    date: 1643641210002,
   },
   {
     id: 3,
     emotion: 5,
     content: "오늘의 일기3",
-    date: 1643641200003,
+    date: 1643641210003,
   },
   {
     id: 4,
     emotion: 2,
     content: "오늘의 일기4",
-    date: 1643641200004,
+    date: 1643641210004,
   },
   {
     id: 5,
     emotion: 4,
     content: "오늘의 일기5",
-    date: 1643641200005,
+    date: 1643641210005,
   },
 ];
 
@@ -74,7 +74,7 @@ const App = () => {
   env.PUBLIC_URL = env.PUBLIC_URL || "";
 
   const [data, dispatch] = useReducer(reducer, dummyData);
-  const dataId = useRef(0);
+  const dataId = useRef(6);
 
   // CREATE
   const onCreate = (date, content, emotion) => {
@@ -116,7 +116,7 @@ const App = () => {
                 <Route path='/' element={<Home />} />
                 <Route path='/diary/' element={<Diary />} />
                 <Route path='/diary/:id' element={<Diary />} />
-                <Route path='/edit' element={<Edit />} />
+                <Route path='/edit/:id' element={<Edit />} />
                 <Route path='/new' element={<New />} />
               </Routes>
             </div>
