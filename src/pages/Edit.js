@@ -8,6 +8,12 @@ const Edit = () => {
   const { id } = useParams();
   const diaryList = useContext(DiaryStateContext);
   const [originData, setOriginData] = useState();
+
+  useEffect(() => {
+    const titleElement = document.getElementsByTagName("title")[0];
+    titleElement.innerHTML = `감정 일기장 - ${id}번 일기 수정`;
+  }, [id]);
+
   useEffect(() => {
     if (diaryList.length >= 1) {
       const targetDiary = diaryList.find(
@@ -19,7 +25,7 @@ const Edit = () => {
         navigate("/", { replace: true });
       }
     }
-  }, [id, diaryList]);
+  }, [id, diaryList, navigate]);
 
   return (
     <div>

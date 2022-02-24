@@ -1,4 +1,10 @@
-import React, { useState, useRef, useContext, useEffect } from "react";
+import React, {
+  useState,
+  useRef,
+  useContext,
+  useEffect,
+  useCallback,
+} from "react";
 import MyHeader from "./../components/MyHeader";
 import MyButton from "./../components/MyButton";
 import { useNavigate } from "react-router-dom";
@@ -9,17 +15,15 @@ import { emotionList } from "../util/emotion";
 
 const DiaryEditor = ({ isEdit, originData }) => {
   const navigate = useNavigate();
-
   const contentRef = useRef();
   const [content, setContent] = useState("");
   const [emotion, setEmotion] = useState(3);
   const [date, setDate] = useState(getStringDate(new Date()));
-
-  const handleClickEmotion = (emotion) => {
+  const handleClickEmotion = useCallback((emotion) => {
     setEmotion(emotion);
-  };
+  }, []);
 
-  const { onCreate, onEdit } = useContext(DiaryDispatchContext);
+  const { onCreate, onEdit, onRemove } = useContext(DiaryDispatchContext);
 
   const handleCreateSubmit = () => {
     if (content.length < 1) {
@@ -43,6 +47,13 @@ const DiaryEditor = ({ isEdit, originData }) => {
     }
   };
 
+  const handleRemoveSubmit = () => {
+    if (window.confirm("일기를 삭제하시겠습니까?")) {
+      onRemove(originData.id);
+      navigate("/", { replace: true });
+    }
+  };
+
   useEffect(() => {
     if (isEdit) {
       setDate(getStringDate(new Date(parseInt(originData.date, 10))));
@@ -61,6 +72,15 @@ const DiaryEditor = ({ isEdit, originData }) => {
               type={"default"}
               onClick={() => navigate(-1)}
             />
+          }
+          rightChild={
+            isEdit && (
+              <MyButton
+                text={"삭제하기"}
+                type={"negative"}
+                onClick={handleRemoveSubmit}
+              />
+            )
           }
         />
       </div>

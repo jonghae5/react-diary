@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MyButton from "./MyButton";
 import DiaryItem from "./DiaryItem";
@@ -14,7 +14,7 @@ const filterOptionList = [
   { value: "bad", name: "안좋은 감정만" },
 ];
 
-const ControlMenu = ({ value, onChange, optionList }) => {
+const ControlMenu = React.memo(({ value, onChange, optionList }) => {
   return (
     <select
       className='ControlMenu'
@@ -28,7 +28,7 @@ const ControlMenu = ({ value, onChange, optionList }) => {
       ))}
     </select>
   );
-};
+});
 
 const DiaryList = ({ diaryList }) => {
   const navigate = useNavigate();
@@ -37,6 +37,19 @@ const DiaryList = ({ diaryList }) => {
 
   // 최신순, 오래된순
   const [sortType, setSortType] = useState("latest");
+
+  // 이런 식으로 onChange 함수를 props 으로 전달하면 React.memo가 제대로 동작되지 않는다. > 새롭게 함수가 생성하기 때문
+  // 렌더링이 일어났을 때도 useState 구문은 useCallback을 이미 감싸고 나온 형태이기 때문에 React.memo로 가능하다!
+  // 상태변화 함수 그 자체를 내려주면 최적화하기 쉽다.
+
+  // const handleSetSortType = (sortType) => {
+  //   setSortType(sortType);
+  // };
+
+  // const handleSetFilter = (filter) => {
+  //   setFilter(filter);
+  // };
+
   const getProcessedDiaryList = () => {
     const filterCallBack = (item) => {
       if (filter === "bad") {
